@@ -43,3 +43,31 @@ stages:
         ArtifactName: 'warfile'
         publishLocation: 'Container'
 
+- stage: Dev
+  jobs:
+  - job: DeployDev
+    displayName: 'Deploy to Dev Environment'
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Suscripcion Infraestructura(7450e2a1-d9c5-4a9f-b8f7-8290df493696)'
+        appType: 'webAppLinux'
+        WebAppName: 'tomcatapache-appdemo-qa'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
+
+- stage: Production
+  jobs:
+  - job: ManualIntervention
+    displayName: 'Manual Intervention Required'
+    steps:
+  - job: DeployProduction
+    displayName: 'Deploy to Production Environment'
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Suscripcion Infraestructura(7450e2a1-d9c5-4a9f-b8f7-8290df493696)'
+        appType: 'webAppLinux'
+        WebAppName: 'tomcatapache-appdemo'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
