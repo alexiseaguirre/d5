@@ -7,6 +7,10 @@
 trigger:
 - master
 
+variables:
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
 stages:
 - stage: 'Build'
   displayName: 'Build'
@@ -14,7 +18,7 @@ stages:
   - job: 'Build'
     displayName: 'Build job'
     pool:
-      vmImage: ubuntu-latest
+      vmImage: $(vmImageName)
     steps:
     - task: Maven@3
       inputs:
@@ -44,10 +48,18 @@ stages:
         publishLocation: 'Container'
 
 - stage: Dev
-  jobs:
-  - job: DeployDev
-    displayName: 'Deploy to Dev Environment'
+  displayName: 'Dev'
+  jobs: 
+  - job: 'Dev'
+    displayName: 'Dev'
+    pool:
+      vmImage: $(vmImageName)
     steps:
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        mavenOptions: '-Xmx3072m'
+        javaHomeOption: 'JDKVersion'
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
