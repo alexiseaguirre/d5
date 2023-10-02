@@ -60,7 +60,6 @@ stages:
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
         goals: 'package'
-        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
     - task: CopyFiles@2
       inputs:
         Contents: '**/*.war'
