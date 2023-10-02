@@ -61,6 +61,10 @@ stages:
   - job: ManualIntervention
     displayName: 'Manual Intervention Required'
     steps:
+    - task: ManualIntervention@1
+      inputs:
+        instructions: 'Please approve the deployment to the production environment'
+        notifyUsers: 'all'
   - job: DeployProduction
     displayName: 'Deploy to Production Environment'
     steps:
