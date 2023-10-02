@@ -9,7 +9,7 @@ trigger:
 
 stages:
 - stage: 'Build'
-  displayName: 'QA Environment'
+  displayName: 'Build'
   jobs: 
   - job: 'Build'
     displayName: 'Build job'
@@ -53,5 +53,20 @@ stages:
         ConnectionType: 'AzureRM'
         azureSubscription: 'Suscripcion Infraestructura(7450e2a1-d9c5-4a9f-b8f7-8290df493696)'
         appType: 'webAppLinux'
-        WebAppName: 'tomcatapache-appdemo-qa'
+        WebAppName: 'tomcatapache-appdemo-dev'
         packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
+        jdkVersionOption: '1.8'
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        goals: 'package'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
+    - task: CopyFiles@2
+      inputs:
+        Contents: '**/*.war'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'warfile'
+        publishLocation: 'Container'
