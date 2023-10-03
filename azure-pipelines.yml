@@ -31,3 +31,32 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'warfile'
         publishLocation: 'Container'
+
+- stage: DeployToStaging
+  displayName: 'Deploy to Staging'
+  jobs: 
+  - job: DeployStaging
+    displayName: 'Deploy to Staging App Service'
+    dependsOn: BuildAndTest
+    steps:
+    - task: AzureRmWebAppDeployment@1
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: 'Suscripcion Infraestructura(7450e2a1-d9c5-4a9f-b8f7-8290df493696)'
+        appType: 'webAppLinux'
+        WebAppName: 'tomcatapache-appdemo-staging'
+        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
+        jdkVersionOption: '1.8'
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        goals: 'package'
+    - task: CopyFiles@2
+      inputs:
+        Contents: '**/*.war'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'warfile'
+        publishLocation: 'Container'
