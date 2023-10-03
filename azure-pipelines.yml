@@ -39,7 +39,7 @@ stages:
     displayName: 'Deploy to Staging App Service'
     dependsOn: BuildAndTest
     steps:
-    - task: AzureRmWebAppDeployment@1
+    - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
         azureSubscription: 'Suscripcion Infraestructura(7450e2a1-d9c5-4a9f-b8f7-8290df493696)'
