@@ -3,7 +3,6 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 # check if CI is working
-
 trigger:
 - master
 
@@ -12,66 +11,17 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: 'Build'
-  displayName: 'Build'
-  jobs: 
-  - job: 'Build'
-    displayName: 'Build job'
-    pool:
-      vmImage: $(vmImageName)
+- stage: BuildAndTest
+  displayName: 'Build and Test'
+  jobs:
+  - job: Build
+    displayName: 'Build and Test'
     steps:
     - task: Maven@3
       inputs:
         mavenPomFile: 'pom.xml'
         mavenOptions: '-Xmx3072m'
         javaHomeOption: 'JDKVersion'
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'Suscripcion Infraestructura(7450e2a1-d9c5-4a9f-b8f7-8290df493696)'
-        appType: 'webAppLinux'
-        WebAppName: 'tomcatapache-appdemo-qa'
-        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
-        jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: true
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'package'
-    - task: CopyFiles@2
-      inputs:
-        Contents: '**/*.war'
-        TargetFolder: '$(build.artifactstagingdirectory)'
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'warfile'
-        publishLocation: 'Container'
-
-- stage: Dev
-  displayName: 'Dev'
-  jobs: 
-  - job: 'Dev'
-    displayName: 'Dev'
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Maven@3
-      inputs:
-        mavenPomFile: 'pom.xml'
-        mavenOptions: '-Xmx3072m'
-        javaHomeOption: 'JDKVersion'
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'Suscripcion Infraestructura(7450e2a1-d9c5-4a9f-b8f7-8290df493696)'
-        appType: 'webAppLinux'
-        WebAppName: 'tomcatapache-appdemo-dev'
-        packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.war'
-        jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: true
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'package'
     - task: CopyFiles@2
       inputs:
         Contents: '**/*.war'
