@@ -37,7 +37,6 @@ stages:
   jobs: 
   - job: DeployStaging
     displayName: 'Deploy to Staging App Service'
-    dependsOn: BuildAndTest
     steps:
     - task: AzureRmWebAppDeployment@4
       inputs:
